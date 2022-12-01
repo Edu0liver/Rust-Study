@@ -2,6 +2,7 @@ use std::str;
 use std::str::FromStr;
 
 mod enum_try {
+    use std::io;
     
     #[derive(Debug)]
     enum IpAddrKind {
@@ -33,30 +34,47 @@ mod enum_try {
             let address_tuple = ip_address_string_to_tuple(&address);
 
             match address_tuple {
-                IpAddrKind::V4(_) => 
+                IpAddrKind::V4(_) => {
                     return IpAddr {
                         kind: address_tuple,
                         address
-                    },
-                _ => 
+                    }
+                },
+                IpAddrKind::V6(_) => {
                     return IpAddr {
-                        kind: IpAddrKind::V6(address.clone()),
+                        kind: address_tuple,
                         address
                     }
+                }
             }
-
         }
     }
 
     fn ip_address_string_to_tuple(address: &String) -> IpAddrKind {
-        let address_vec: Vec<u8> = address.split(".").map(|x| x.parse::<u8>().unwrap()).collect();
+        let address_vec: Vec<u8> = address.split(".").map(|x| {
+            match x.parse::<u8>() {
+                Ok(n) => n,
+                Err(_) => 255
+            }
+        }).collect();
+
+        if address_vec == [255, 255, 255, 255] {
+            return IpAddrKind::V6(address.clone());
+        }
+
         let address_tuple: (u8, u8, u8, u8) = (address_vec[0], address_vec[1], address_vec[2], address_vec[3]);
 
         IpAddrKind::V4(address_tuple)
     }
     
     pub fn enum_call() {
-        let ip_address = IpAddr::new(String::from("127.0.0.1"));
+        let mut input = String::new();
+
+        io::stdin()
+            .read_line(&mut input)
+            .unwrap();
+
+        let ip_address = IpAddr::new(input.trim().to_string());
 
         println!("{:#?}", ip_address);
     }
