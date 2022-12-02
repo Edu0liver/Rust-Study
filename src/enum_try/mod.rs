@@ -1,6 +1,3 @@
-use std::str;
-use std::str::FromStr;
-
 mod enum_try {
     use std::io;
     
@@ -31,9 +28,12 @@ mod enum_try {
                         address
                     }
                 },
-                _ => {
+                (false, false) => {
                     panic!("Invalid IP address");
-                }
+                },
+                (true, true) => {
+                    panic!("Invalid IP address");
+                },
             }
         }
     }
@@ -56,7 +56,12 @@ mod enum_try {
 
     fn ip_address_v4_string_to_tuple(address: &String) -> IpAddrKind {
         let address_vec: Vec<u8> = address.split(".")
-        .map(|x| x.parse::<u8>().unwrap())
+        .map(|x|{
+            match x.parse::<u8>() {
+                Ok(x) => x,
+                Err(_) => panic!("Invalid IP address"),
+            }
+        })
         .collect();
 
         let address_tuple: (u8, u8, u8, u8) = (address_vec[0], address_vec[1], address_vec[2], address_vec[3]);
