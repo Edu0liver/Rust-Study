@@ -15,7 +15,7 @@ mod enum_try {
     
     impl IpAddr {
         fn new(address: String) -> IpAddr {
-            match is_address_v4(&address){
+            match address_type(&address){
                 (true, false) => {
                     IpAddr {
                         kind: ip_address_v4_string_to_tuple(&address),
@@ -38,33 +38,38 @@ mod enum_try {
         }
     }
 
-    fn is_address_v4(address: &String) -> (bool, bool) {
+    fn address_type(address: &String) -> (bool, bool) {
         let mut is_v4 = true;
         let mut is_v6 = true;
 
         for c in address.chars() {
             if c == ':' {
                 is_v4 = false;
-                return (is_v4, is_v6);
+            }
+
+            if c == '.' {
+                is_v6 = false;
             }
         }
-
-        is_v6 = false;
         
         (is_v4, is_v6)
     }
 
     fn ip_address_v4_string_to_tuple(address: &String) -> IpAddrKind {
         let address_vec: Vec<u8> = address.split(".")
-        .map(|x|{
-            match x.parse::<u8>() {
-                Ok(x) => x,
-                Err(_) => panic!("Invalid IP address"),
-            }
-        })
+        .map(|x| x.parse::<u8>().unwrap())
         .collect();
 
-        let address_tuple: (u8, u8, u8, u8) = (address_vec[0], address_vec[1], address_vec[2], address_vec[3]);
+        if address_vec.len() != 4 {
+            panic!("Invalid IP address");
+        }
+
+        let address_tuple: (u8, u8, u8, u8) = (
+            address_vec[0],
+            address_vec[1],
+            address_vec[2],
+            address_vec[3]
+        );
 
         IpAddrKind::V4(address_tuple)
     }
@@ -74,7 +79,20 @@ mod enum_try {
         .map(|x| x.parse::<u128>().unwrap())
         .collect();
 
-        let address_tuple: (u128, u128, u128, u128, u128, u128, u128, u128) = (address_vec[0], address_vec[1], address_vec[2], address_vec[3], address_vec[4], address_vec[5], address_vec[6], address_vec[7]);
+        if address_vec.len() != 8 {
+            panic!("Invalid IP address");
+        }
+
+        let address_tuple: (u128, u128, u128, u128, u128, u128, u128, u128) = (
+            address_vec[0],
+            address_vec[1],
+            address_vec[2],
+            address_vec[3],
+            address_vec[4],
+            address_vec[5],
+            address_vec[6],
+            address_vec[7]
+        );
 
         IpAddrKind::V6(address_tuple)
     }
