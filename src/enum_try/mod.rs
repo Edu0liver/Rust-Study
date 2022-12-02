@@ -7,7 +7,7 @@ mod enum_try {
     #[derive(Debug)]
     enum IpAddrKind {
         V4((u8, u8, u8, u8)),
-        V6(String)
+        V6((u128, u128, u128, u128, u128, u128, u128, u128))
     }
     
     #[derive(Debug)]
@@ -15,59 +15,68 @@ mod enum_try {
         kind: IpAddrKind,
         address: String
     }
-
-    enum Message {
-        Quit,
-        Move{ x: i32, y: i32 },
-        Write(String),
-        ChangeColor(i32, i32, i32)
-    }
-
-    impl Message {
-        fn some_function() -> String {
-            String::from("Olá :)")
-        }
-    }
     
     impl IpAddr {
         fn new(address: String) -> IpAddr {
-            let address_tuple = ip_address_string_to_tuple(&address);
-
-            match address_tuple {
-                IpAddrKind::V4(_) => {
-                    return IpAddr {
-                        kind: address_tuple,
+            match is_address_v4(&address){
+                (true, false) => {
+                    IpAddr {
+                        kind: ip_address_v4_string_to_tuple(&address),
                         address
                     }
                 },
-                IpAddrKind::V6(_) => {
-                    return IpAddr {
-                        kind: address_tuple,
+                (false, true) => {
+                    IpAddr {
+                        kind: ip_address_v6_string_to_tuple(&address),
                         address
                     }
+                },
+                _ => {
+                    panic!("Invalid IP address");
                 }
             }
         }
     }
 
-    fn ip_address_string_to_tuple(address: &String) -> IpAddrKind {
-        let address_vec: Vec<u8> = address.split(".").map(|x| {
-            match x.parse::<u8>() {
-                Ok(n) => n,
-                Err(_) => 255
-            }
-        }).collect();
+    fn is_address_v4(address: &String) -> (bool, bool) {
+        let mut is_v4 = true;
+        let mut is_v6 = true;
 
-        if address_vec == [255, 255, 255, 255] {
-            return IpAddrKind::V6(address.clone());
+        for c in address.chars() {
+            if c == ':' {
+                is_v4 = false;
+                return (is_v4, is_v6);
+            }
         }
+
+        is_v6 = false;
+        
+        (is_v4, is_v6)
+    }
+
+    fn ip_address_v4_string_to_tuple(address: &String) -> IpAddrKind {
+        let address_vec: Vec<u8> = address.split(".")
+        .map(|x| x.parse::<u8>().unwrap())
+        .collect();
 
         let address_tuple: (u8, u8, u8, u8) = (address_vec[0], address_vec[1], address_vec[2], address_vec[3]);
 
         IpAddrKind::V4(address_tuple)
     }
     
+    fn ip_address_v6_string_to_tuple(address: &String) -> IpAddrKind {
+        let address_vec: Vec<u128> = address.split(":")
+        .map(|x| x.parse::<u128>().unwrap())
+        .collect();
+
+        let address_tuple: (u128, u128, u128, u128, u128, u128, u128, u128) = (address_vec[0], address_vec[1], address_vec[2], address_vec[3], address_vec[4], address_vec[5], address_vec[6], address_vec[7]);
+
+        IpAddrKind::V6(address_tuple)
+    }
+    
     pub fn enum_call() {
+        println!("Digite um endereço de IP:");
+        
         let mut input = String::new();
 
         io::stdin()
