@@ -108,7 +108,7 @@ mod enum_try {
 
         let ip_address = IpAddr::new(input.trim().to_string());
 
-        println!("{:#?}", ip_address);
+        println!("{:?}", ip_address);
     }
 
 }
