@@ -1,5 +1,7 @@
 
 mod struct_try {
+    use std::io;
+
     #[derive(Debug)]
     struct Person {
         name: String,
@@ -26,17 +28,22 @@ mod struct_try {
     }
 
     fn split_name(name: &String) -> Vec<String> {
-        let mut vec = Vec::new();
+        let vec_str: Vec<&str> = name.split(" ").collect();
+        let mut vec_string: Vec<String> = Vec::new();
 
-        name.split(" ").for_each(|s| vec.push(s.to_string()));
-        
-        vec
+        for name in vec_str.iter() {
+            vec_string.push(name.to_string());
+        }
+
+        vec_string
     }
 
     fn name_title_format(names: &Vec<String>) -> Vec<String> {
         let mut vec = Vec::new();
 
-        names.iter().for_each(|s| vec.push(name_upper(s.to_string())));
+        for name in names.iter() {
+            vec.push(name_upper(name.to_string()))
+        }
         
         vec
     }
@@ -50,7 +57,29 @@ mod struct_try {
     }
 
     pub fn struct_call() {
-        let person = Person::new(String::from("eduardo alves"), 19);
+        let mut input_name = String::new();
+        let mut input_age = String::new();
+
+        println!("Enter your name: ");
+        io::stdin()
+        .read_line(&mut input_name)
+        .expect("Failed to read line");
+
+        let name = input_name
+        .trim()
+        .to_string();
+
+        println!("Enter your age: ");
+        io::stdin()
+        .read_line(&mut input_age)
+        .expect("Failed to read line");
+
+        let age: u8 = input_age
+        .trim()
+        .parse()
+        .expect("Failed to parse");
+
+        let person = Person::new(name, age);
     
         println!("{:#?}", person);
     }
