@@ -1,4 +1,4 @@
-
+#![allow(unused_imports)]
 use rand;
 
 pub fn add_one(x: i32) -> i32 {
