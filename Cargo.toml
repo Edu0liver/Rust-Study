@@ -14,3 +14,9 @@ opt-level = 1
 
 [profile.release]
 opt-level = 3
+
+[workspace]
+members = [
+    "addwork",
+    "addwork-one",
+]
