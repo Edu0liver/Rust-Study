@@ -1,6 +1,7 @@
 
 mod traits_try{
-    use std::fmt::Display; 
+    use std::fmt::Display;
+    use std::io;
 
     struct Pair<T> {
         x: T,
@@ -34,11 +35,21 @@ mod traits_try{
     }
 
     pub fn traits_call() {
-        let pair = Pair::new(2, 3);
-        pair.cmp_display();
+        let mut input = String::new();
+        let mut input2 = String::new();
+
+        println!("Enter a number: ");
+        io::stdin().read_line(&mut input).expect("Failed to read line");
+
+        println!("Enter another number: ");
+        io::stdin().read_line(&mut input2).expect("Failed to read line");
+
+        let input: i32 = input.trim().parse().expect("Please type a number!");
+        let input2: i32 = input2.trim().parse().expect("Please type a number!");
         
-        let pair2 = Pair::new(2, 3);
-        println!("Pair2: {}", pair2.show());
+        let pair = Pair::new(input, input2);
+        pair.cmp_display();
+        println!("Pair: {}", pair.show());
     }
 
 }
