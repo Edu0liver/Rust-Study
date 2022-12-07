@@ -18,6 +18,9 @@ use crate::generic_try::generic_try;
 mod traits_try;
 use crate::traits_try::traits_try;
 
+mod smart_pointers_try;
+use crate::smart_pointers_try::smart_pointers_try;
+
 fn main() {
     choice();
 }

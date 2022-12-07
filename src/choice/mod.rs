@@ -8,6 +8,7 @@ pub mod choice {
     use crate::enum_try::enum_try;
     use crate::generic_try::generic_try;
     use crate::traits_try::traits_try;
+    use crate::smart_pointers_try::smart_pointers_try;
     
     pub fn choice(){
         println!("What do you want to try? Tip a number:");
@@ -16,7 +17,8 @@ pub mod choice {
         println!("3. Enum");
         println!("4. Generic");
         println!("5. Traits");
-        println!("6. Exit");
+        println!("6. Smart Pointers");
+        println!("7. Exit");
     
         let mut input = String::new();
     
@@ -32,7 +34,8 @@ pub mod choice {
             "3" => enum_try(),
             "4" => generic_try(),
             "5" => traits_try(),
-            "6" => (),
+            "6" => smart_pointers_try(),
+            "7" => (),
             _ => println!("Invalid option"),
         }
     }
