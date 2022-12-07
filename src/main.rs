@@ -1,4 +1,4 @@
-#![allow(unused_imports, dead_code)]
+#![allow(unused_imports, unused_variables, dead_code)]
 
 mod choice;
 use crate::choice::choice::choice;
