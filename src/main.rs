@@ -21,6 +21,9 @@ use crate::traits_try::traits_try;
 mod smart_pointers_try;
 use crate::smart_pointers_try::smart_pointers_try;
 
+mod threads_try;
+use crate::threads_try::threads_try;
+
 fn main() {
     choice();
 }
