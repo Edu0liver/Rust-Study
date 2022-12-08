@@ -1,7 +1,7 @@
 
 mod smart_pointers_try {
     use std::ops::Deref;
-    use std::rc::Rc;
+    use std::rc::{Rc, Weak};
     use crate::smart_pointers_try::smart_pointers_try::ListRc::{Cons, Nil};
     use std::cell::RefCell;
 
@@ -104,7 +104,12 @@ mod smart_pointers_try {
         }
     }
 
-    
+    #[derive(Debug)]
+    struct Node {
+        value: i32,
+        parent: RefCell<Weak<Node>>,
+        children: RefCell<Vec<Rc<Node>>>,
+    }
 
     pub fn smart_pointers_call() {
         //Box smart pointer
@@ -151,6 +156,7 @@ mod smart_pointers_try {
         println!("count after c goes out of scope = {}", Rc::strong_count(&a));
 
         //Reference Cycles
+        println!("\nReference Cycles");
         let f = Rc::new(ListRefCell::Cons(5, RefCell::new(Rc::new(ListRefCell::Nil))));
 
         println!("a initial rc count = {}", Rc::strong_count(&f));
@@ -169,9 +175,35 @@ mod smart_pointers_try {
         println!("b rc count after changing a = {}", Rc::strong_count(&g));
         println!("a rc count after changing a = {}", Rc::strong_count(&f));
 
-        // Uncomment the next line to see that we have a cycle;
-        // it will overflow the stack
-        // println!("a next item = {:?}", a.tail());
+        //Weak references
+        let leaf = Rc::new(Node {
+            value: 3,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![]),
+        });
+
+        println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+
+        let branch = Rc::new(Node {
+            value: 5,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![Rc::clone(&leaf)]),
+        });
+
+        *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+
+        println!(
+            "branch strong = {}, weak = {}",
+            Rc::strong_count(&branch),
+            Rc::weak_count(&branch)
+        );
+
+        println!(
+            "leaf strong = {}, weak = {}",
+            Rc::strong_count(&leaf),
+            Rc::weak_count(&leaf)
+        );
+
     }
 
 }
