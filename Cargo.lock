@@ -163,7 +163,7 @@ dependencies = [
 
 [[package]]
 name = "rust_study"
-version = "0.1.0"
+version = "0.10.0"
 dependencies = [
  "colored",
  "rand 0.5.6",
