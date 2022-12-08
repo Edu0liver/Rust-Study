@@ -2,6 +2,8 @@
 mod smart_pointers_try {
     use std::ops::Deref;
     use std::rc::Rc;
+    use crate::smart_pointers_try::smart_pointers_try::ListRc::{Cons, Nil};
+    use std::cell::RefCell;
 
     //Box smart pointer
     #[derive(Debug)]
@@ -86,7 +88,23 @@ mod smart_pointers_try {
         }
     }
 
-    use crate::smart_pointers_try::smart_pointers_try::ListRc::{Cons, Nil};
+    //Reference Cycles
+    #[derive(Debug)]
+    enum ListRefCell {
+        Cons(i32, RefCell<Rc<ListRefCell>>),
+        Nil
+    }
+
+    impl ListRefCell {
+        fn tail(&self) -> Option<&RefCell<Rc<ListRefCell>>> {
+            match self {
+                ListRefCell::Cons(_, item) => Some(item),
+                ListRefCell::Nil => None,
+            }
+        }
+    }
+
+    
 
     pub fn smart_pointers_call() {
         //Box smart pointer
@@ -131,6 +149,29 @@ mod smart_pointers_try {
             println!("count after creating c = {}", Rc::strong_count(&a));
         }
         println!("count after c goes out of scope = {}", Rc::strong_count(&a));
+
+        //Reference Cycles
+        let f = Rc::new(ListRefCell::Cons(5, RefCell::new(Rc::new(ListRefCell::Nil))));
+
+        println!("a initial rc count = {}", Rc::strong_count(&f));
+        println!("a next item = {:?}", f.tail());
+
+        let g = Rc::new(ListRefCell::Cons(10, RefCell::new(Rc::clone(&f))));
+
+        println!("a rc count after b creation = {}", Rc::strong_count(&f));
+        println!("b initial rc count = {}", Rc::strong_count(&g));
+        println!("b next item = {:?}", g.tail());
+
+        if let Some(link) = f.tail() {
+            *link.borrow_mut() = Rc::clone(&g);
+        }
+
+        println!("b rc count after changing a = {}", Rc::strong_count(&g));
+        println!("a rc count after changing a = {}", Rc::strong_count(&f));
+
+        // Uncomment the next line to see that we have a cycle;
+        // it will overflow the stack
+        // println!("a next item = {:?}", a.tail());
     }
 
 }
@@ -139,12 +180,12 @@ pub fn smart_pointers_try() {
     crate::smart_pointers_try::smart_pointers_try::smart_pointers_call();
 }
 
-//Interior mutability
 mod tests {
     use super::*;
     use std::cell::RefCell;
     use crate::smart_pointers_try::smart_pointers_try::{Messenger, LimitTracker};
-
+    
+    //Interior mutability
     struct MockMessenger {
         sent_messages: RefCell<Vec<String>>,
     }
@@ -156,16 +197,22 @@ mod tests {
             }
         }
     }
-
+    
     impl Messenger for MockMessenger {
         fn send(&self, message: &str) {
-            let mut one_borrow = self.sent_messages.borrow_mut();
-            let mut two_borrow = self.sent_messages.borrow_mut();
-
-            one_borrow.push(String::from(message));
-            two_borrow.push(String::from(message));
+            self.sent_messages.borrow_mut().push(String::from(message));
         }
     }
+
+    // impl Messenger for MockMessenger {
+    //     fn send(&self, message: &str) {
+    //         let mut one_borrow = self.sent_messages.borrow_mut();
+    //         let mut two_borrow = self.sent_messages.borrow_mut();
+
+    //         one_borrow.push(String::from(message));
+    //         two_borrow.push(String::from(message));
+    //     }
+    // }
 
     #[test]
     fn it_sends_an_over_75_percent_warning_message() {
