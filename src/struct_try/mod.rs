@@ -22,7 +22,7 @@ mod struct_try {
 
         vec[0] = vec[0].to_uppercase().nth(0).unwrap();
 
-        let word: String = vec.into_iter().collect();
+        let word: String = vec.iter().collect();
 
         word
     }
