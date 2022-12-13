@@ -112,12 +112,12 @@ mod smart_pointers_try {
     }
 
     pub fn smart_pointers_call() {
-        //Box smart pointer
+    //Box smart pointer
         println!("\nBox smart pointer");
         let list = List::Cons(1, Box::new(List::Cons(2, Box::new(List::Cons(3, Box::new(List::Nil))))));
         println!("List: {:?}", list);
 
-        //Deref coercion
+    //Deref coercion
         println!("\nDeref coercion");
         let x = 5;
         let y = MyBox::new(x);
@@ -130,7 +130,7 @@ mod smart_pointers_try {
         let m = MyBox::new(String::from("Rust"));
         hello(&(*m)[..]);
 
-        //Drop trait
+    //Drop trait
         println!("\nDrop trait");
         let c = CustomSmartPointer { data: String::from("my stuff") };
         let d = CustomSmartPointer { data: String::from("other stuff") };
@@ -140,7 +140,7 @@ mod smart_pointers_try {
         drop(d);
         println!("CustomSmartPointers created.");
 
-        //Rc smart pointer
+    //Rc smart pointer
         println!("\nRc smart pointer");
         let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
         let b = Cons(3, Rc::clone(&a));
@@ -155,7 +155,7 @@ mod smart_pointers_try {
         }
         println!("count after c goes out of scope = {}", Rc::strong_count(&a));
 
-        //Reference Cycles
+    //Reference Cycles
         println!("\nReference Cycles");
         let f = Rc::new(ListRefCell::Cons(5, RefCell::new(Rc::new(ListRefCell::Nil))));
 

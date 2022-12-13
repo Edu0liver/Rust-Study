@@ -24,6 +24,9 @@ use crate::smart_pointers_try::smart_pointers_try;
 mod threads_try;
 use crate::threads_try::threads_try;
 
+mod oop_try;
+use crate::oop_try::oop_try;
+
 fn main() {
     choice();
 }
