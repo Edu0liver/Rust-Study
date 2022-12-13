@@ -1,5 +1,4 @@
 
-
 mod oop_try {
 
     fn ex_1(){
@@ -38,7 +37,7 @@ mod oop_try {
 
     }
 
-    // Ex 2
+    //////////////////////////////////////// Ex 2
     pub trait Draw {
         fn draw(&self);
     }
@@ -65,6 +64,90 @@ mod oop_try {
         fn draw(&self) {
             println!("Draw a button")
         }
+    }
+
+    /////////////////////////////////////// Ex 3
+    pub struct Post {
+        state: Option<Box<dyn State>>,
+        content: String,
+    }
+    
+    trait State {
+        fn request_review(self: Box<Self>) -> Box<dyn State>;
+        fn approve(self: Box<Self>) -> Box<dyn State>;
+        fn content<'a>(&self, post: &'a Post) -> &'a str {
+            ""
+        }
+    }
+    
+    struct Draft {}
+    
+    impl State for Draft {
+        fn request_review(self: Box<Self>) -> Box<dyn State> {
+            Box::new(PendingReview {})
+        }
+
+        fn approve(self: Box<Self>) -> Box<dyn State> {
+            self
+        }
+    }
+    
+    struct PendingReview {}
+    
+    impl State for PendingReview {
+        fn request_review(self: Box<Self>) -> Box<dyn State> {
+            self
+        }
+
+        fn approve(self: Box<Self>) -> Box<dyn State> {
+            Box::new(Published {})
+        }
+    }
+
+    struct Published {}
+
+    impl State for Published {
+        fn request_review(self: Box<Self>) -> Box<dyn State> {
+            self
+        }
+
+        fn approve(self: Box<Self>) -> Box<dyn State> {
+            self
+        }
+
+        fn content<'a>(&self, post: &'a Post) -> &'a str {
+            &post.content
+        }
+    }
+
+    impl Post {
+        pub fn new() -> Post {
+            Post {
+                state: Some(Box::new(Draft {})),
+                content: String::new(),
+            }
+        }
+
+        pub fn add_text(&mut self, text: &str) {
+            self.content.push_str(text);
+        }
+
+        pub fn content(&self) -> &str {
+            self.state.as_ref().unwrap().content(self)
+        }
+
+        pub fn request_review(&mut self) {
+            if let Some(s) = self.state.take() {
+                self.state = Some(s.request_review())
+            }
+        }
+
+        pub fn approve(&mut self) {
+            if let Some(s) = self.state.take() {
+                self.state = Some(s.request_review())
+            }
+        }
+
     }
 
     pub fn oop_call() {
@@ -114,6 +197,23 @@ pub mod ex2_oop_try {
     
         screen.run();
     }
+}
+pub mod ex3_oop_try {
+    use crate::oop_try::oop_try::Post;
+
+    pub fn ex3_oop_call() {
+        let mut post = Post::new();
+
+        post.add_text("I ate a salad for lunch today");
+        assert_eq!("", post.content());
+
+        post.request_review();
+        assert_eq!("", post.content());
+
+        post.approve();
+        assert_eq!("I ate a salad for lunch today", post.content());
+    }
+
 }
 
 pub fn oop_try() {
