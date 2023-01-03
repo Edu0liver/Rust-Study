@@ -27,6 +27,9 @@ use crate::threads_try::threads_try;
 mod oop_try;
 use crate::oop_try::oop_try;
 
+mod user_manage;
+use crate::user_manage::user_manage;
+
 fn main() {
     choice();
 }

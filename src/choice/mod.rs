@@ -11,6 +11,7 @@ pub mod choice {
     use crate::smart_pointers_try::smart_pointers_try;
     use crate::threads_try::threads_try;
     use crate::oop_try::oop_try;
+    use crate::user_manage::user_manage;
     
     pub fn choice(){
         println!("What do you want to try? Tip a number:");
@@ -22,7 +23,8 @@ pub mod choice {
         println!("6. Smart Pointers");
         println!("7. Threads");
         println!("8. OOP");
-        println!("9. Exit");
+        println!("9. User Manage");
+        println!("10. Exit");
     
         let mut input = String::new();
     
@@ -41,7 +43,8 @@ pub mod choice {
             "6" => smart_pointers_try(),
             "7" => threads_try(),
             "8" => oop_try(),
-            "9" => (),
+            "9" => oop_try(),
+            "10" => user_manage(),
             _ => println!("Invalid option"),
         }
     }
