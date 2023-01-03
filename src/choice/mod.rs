@@ -43,8 +43,8 @@ pub mod choice {
             "6" => smart_pointers_try(),
             "7" => threads_try(),
             "8" => oop_try(),
-            "9" => oop_try(),
-            "10" => user_manage(),
+            "9" => user_manage(),
+            "10" => (),
             _ => println!("Invalid option"),
         }
     }
