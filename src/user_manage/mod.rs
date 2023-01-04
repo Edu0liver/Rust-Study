@@ -19,13 +19,13 @@ mod user_manage {
     }
 
     impl User {
-        fn new(name: &String, age: u8, email: &String, password: &String) -> User {
+        fn new(name: String, age: u8, email: String, password: String) -> User {
             User {
                 id: Uuid::new_v4(),
-                name: name.to_string(),
+                name,
                 age,
-                email: email.to_string(),
-                password: password.to_string(),
+                email,
+                password,
                 admin: false
             }
         }
@@ -43,7 +43,7 @@ mod user_manage {
                 Some(user) => user,
                 None => panic!("No user finded!")
             };
-    
+            
             user
         }
     }
@@ -66,9 +66,7 @@ mod user_manage {
 
         let mut users_db = UsersDB::new();
 
-        users_db.users.push(User::new(&name, age, &email, &password));
-        users_db.users.push(User::new(&name, age, &email, &password));
-        users_db.users.push(User::new(&name, age, &email, &password));
+        users_db.users.push(User::new(name, age, email, password));
 
         println!("{:#?}", users_db);
         
