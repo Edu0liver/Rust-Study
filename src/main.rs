@@ -30,6 +30,12 @@ use crate::oop_try::oop_try;
 mod user_manage;
 use crate::user_manage::user_manage;
 
+mod tabuada;
+use crate::tabuada::exec;
+
+mod elevator;
+use crate::elevator::exec;
+
 fn main() {
     choice();
 }

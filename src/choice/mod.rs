@@ -12,6 +12,8 @@ pub mod choice {
     use crate::threads_try::threads_try;
     use crate::oop_try::oop_try;
     use crate::user_manage::user_manage;
+    use crate::tabuada::exec;
+    use crate::elevator::exec as elevator_exec;
     
     pub fn choice(){
         println!("What do you want to try? Tip a number:");
@@ -24,7 +26,9 @@ pub mod choice {
         println!("7. Threads");
         println!("8. OOP");
         println!("9. User Manage");
-        println!("10. Exit");
+        println!("10. Tabuada");
+        println!("11. Elevator Program");
+        println!("12. Exit");
     
         let mut input = String::new();
     
@@ -44,7 +48,9 @@ pub mod choice {
             "7" => threads_try(),
             "8" => oop_try(),
             "9" => user_manage(),
-            "10" => (),
+            "10" => exec(),
+            "11" => elevator_exec(),
+            "12" => (),
             _ => println!("Invalid option"),
         }
     }
